@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { RichText } from 'prismic-dom';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -26,20 +27,50 @@ interface PostProps {
   post: Post;
 }
 
-// export default function Post() {
-//   // TODO
-// }
+export default function Post({}: PostProps) {
+  // TODO
+  return <div></div>;
+}
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+export const getStaticPaths: GetStaticPaths = async () => {
+  // const prismic = getPrismicClient();
+  // const posts = await prismic.query(TODO);
 
-//   // TODO
-// };
+  // TODO
+  return {
+    paths: [],
+    fallback: 'blocking', // true, false, blocking
+  };
+};
 
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const prismic = getPrismicClient();
+  const { slug } = params;
 
-//   // TODO
-// };
+  const response = await prismic.getByUID('post', String(slug), {});
+  console.log(response);
+  // const post: Post = {
+  //   first_publication_date: '',
+  //   data: {
+  //     title: RichText.asText(response.data.title),
+  //     banner: {
+  //       url: 'string',
+  //     },
+  //     author: RichText.asText(response.data.author),
+  //     content: [
+  //       {
+  //         heading: 'string',
+  //         body: [
+  //           {
+  //             text: 'string',
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // };
+
+  return {
+    props: {},
+  };
+};
