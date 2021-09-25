@@ -7,22 +7,22 @@
 
 .post {
   margin-bottom: 40px;
-  border-left: 3px solid var(--gray-200);
+  border-left: 3px solid var(--grey-200);
   padding-left: 3vw;
   vertical-align: middle;
 
   h2 {
-    color: var(--gray-50);
+    color: var(--grey-50);
     font-size: 28px;
     margin-bottom: 10px;
   }
 
   h2:hover {
-    color: var(--gray-200);
+    color: var(--grey-200);
   }
 
   p {
-    color: var(--gray-100);
+    color: var(--grey-100);
     font-size: 18px;
   }
 }
