@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import { GetStaticProps } from 'next';
 import Prismic from '@prismicio/client';
-
 import { getPrismicClient } from '../services/prismic';
 
 import styles from './home.module.scss';
@@ -30,10 +30,35 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
+  const [posts, setPosts] = useState(postsPagination);
+
+  const loadMorePosts = async () => {
+    if (posts.next_page === null) return;
+
+    const postsResponse = await (await fetch(posts.next_page)).json();
+
+    const newPosts = postsResponse.results.map(post => {
+      return {
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      };
+    });
+
+    setPosts({
+      next_page: postsResponse.next_page,
+      results: [...posts.results, ...newPosts],
+    });
+  }
+
   return (
     <div className={styles.container}>
       <div>
-        {postsPagination.results.map(post => (
+        {posts.results.map(post => (
           <article className={styles.post} key={post.uid}>
             <Link href={`/post/${post.uid}`}>
               <a>
@@ -60,8 +85,8 @@ export default function Home({ postsPagination }: HomeProps) {
           </article>
         ))}
       </div>
-      {postsPagination.next_page !== null && (
-        <p className={styles.loadMore} onClick={() => null}>
+      {posts.next_page !== null && (
+        <p className={styles.loadMore} onClick={loadMorePosts}>
           Carregar mais posts
         </p>
       )}
@@ -74,7 +99,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const postsResponse = await prismic.query(
     Prismic.Predicates.at('document.type', 'post'),
-    { pageSize: 5 }
+    { pageSize: 2 }
   );
 
   const posts = postsResponse.results.map(post => {
