@@ -44,7 +44,13 @@ export default function Home({ postsPagination }: HomeProps) {
             <div className={styles.postMeta}>
               <div>
                 <FiCalendar />
-                <span>{post.first_publication_date}</span>
+                <span>{format(
+                  new Date(post.first_publication_date),
+                  'dd LLL yyyy',
+                  {
+                    locale: ptBR,
+                  }
+                )}</span>
               </div>
               <div>
                 <FiUser />
@@ -68,20 +74,13 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const postsResponse = await prismic.query(
     Prismic.Predicates.at('document.type', 'post'),
-    { pageSize: 1 }
+    { pageSize: 5 }
   );
-  console.log(postsResponse);
 
   const posts = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-      first_publication_date: format(
-        new Date(post.first_publication_date),
-        'dd LLL yyyy',
-        {
-          locale: ptBR,
-        }
-      ),
+      first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,
